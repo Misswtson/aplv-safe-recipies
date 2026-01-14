@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 from typing import List, Dict, Any
+from app.rag.allergy_normalizer import normalize_allergies
 
 
 DATA_PATH = Path("data/recipes.json")
@@ -44,6 +45,17 @@ class RecipeLoader:
             safe_recipes.append(recipe)
 
         return safe_recipes
+
+        def get_safe_recipes_for_user(self, user_allergies: List[str]) -> List[Dict[str, Any]]:
+           """
+           Public method used by the API.
+           Takes raw user input and returns safe recipes.
+           """
+        normalized_allergies = normalize_allergies(user_allergies)
+
+        return self.filter_by_allergies(list(normalized_allergies))
+
+
 
     def to_documents(self, recipes: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
