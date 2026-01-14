@@ -1,0 +1,34 @@
+[
+  {
+    "id": "banana-oat-pancakes",
+    "title": "Panqueques de Plátano y Avena",
+    "description": "Panqueques suaves y seguros para niños con APLV severo y alergias múltiples.",
+    "safe_for": ["APLV", "HUEVO", "LECHE", "SOYA", "FRUTOS_SECOS"],
+    "contains": [],
+    "age_range": "12+ meses",
+    "ingredients": [
+      {
+        "name": "plátano maduro",
+        "quantity": "1 unidad",
+        "notes": "Debe estar bien maduro para endulzar naturalmente"
+      },
+      {
+        "name": "avena sin gluten",
+        "quantity": "1/2 taza",
+        "notes": "Certificada sin trazas de leche"
+      },
+      {
+        "name": "agua",
+        "quantity": "1/4 taza",
+        "notes": "Puede ajustarse según consistencia"
+      }
+    ],
+    "steps": [
+      "Triturar el plátano hasta obtener un puré.",
+      "Agregar la avena y el agua, mezclar bien.",
+      "Cocinar en sartén antiadherente a fuego medio por ambos lados."
+    ],
+    "nutritional_notes": "Aporta fibra, energía y es libre de proteínas de leche.",
+    "tags": ["desayuno", "aplv", "sin-huevo", "niños"]
+  }
+]
