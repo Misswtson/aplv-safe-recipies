@@ -17,31 +17,31 @@ class RecipeVectorStore:
         self.embedding_generator = EmbeddingGenerator()
 
     def add_recipes(self, recipes: List[Dict]):
-    """
-    Stores recipes as embeddings with allergy metadata.
-    """
-
-    texts = []
-    ids = []
-    metadatas = []
-
-    for recipe in recipes:
-        text = f"""
-        Title: {recipe['title']}
-        Ingredients: {', '.join(recipe['ingredients'])}
-        Instructions: {recipe['instructions']}
         """
-        texts.append(text)
-        ids.append(recipe["id"])
-        metadatas.append(recipe.get("metadata", {}))
+        Stores recipes as embeddings with allergy metadata.
+        """
 
-    embeddings = self.embedding_generator.embed_batch(texts)
+        texts = []
+        ids = []
+        metadatas = []
 
-    self.collection.add(
-        documents=texts,
-        embeddings=embeddings,
-        metadatas=metadatas,
-        ids=ids
+        for recipe in recipes:
+            text = f"""
+            Title: {recipe['title']}
+            Ingredients: {', '.join(recipe['ingredients'])}
+            Instructions: {recipe['instructions']}
+            """
+            texts.append(text)
+            ids.append(recipe["id"])
+            metadatas.append(recipe.get("metadata", {}))
+
+        embeddings = self.embedding_generator.embed_batch(texts)
+
+        self.collection.add(
+             documents=texts,
+             embeddings=embeddings,
+             metadatas=metadatas,
+             ids=ids
     )
 
     def search(self, query: str, top_k: int = 3) -> List[str]:
@@ -55,5 +55,30 @@ class RecipeVectorStore:
             query_embeddings=[query_embedding],
             n_results=top_k
         )
+
+        return results["documents"][0]
+
+    
+    def search_safe(
+        self,
+        query: str,
+        forbidden_diets: list[str],
+        top_k: int = 5
+    ) -> list[str]:
+        """
+        Semantic search with hard safety filters.
+        Recipes matching forbidden diets are excluded at DB level.
+        """
+
+        query_embedding = self.embedding_generator.embed_text(query)
+
+        results = self.collection.query(
+            query_embeddings=[query_embedding],
+            n_results=top_k,
+            where={
+                "diet": {"$nin": forbidden_diets}
+            }
+        )
+
 
         return results["documents"][0]
