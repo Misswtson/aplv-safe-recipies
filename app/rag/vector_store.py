@@ -17,30 +17,32 @@ class RecipeVectorStore:
         self.embedding_generator = EmbeddingGenerator()
 
     def add_recipes(self, recipes: List[Dict]):
+    """
+    Stores recipes as embeddings with allergy metadata.
+    """
+
+    texts = []
+    ids = []
+    metadatas = []
+
+    for recipe in recipes:
+        text = f"""
+        Title: {recipe['title']}
+        Ingredients: {', '.join(recipe['ingredients'])}
+        Instructions: {recipe['instructions']}
         """
-        Stores recipes as embeddings.
-        Each recipe must have: id, title, ingredients, instructions
-        """
+        texts.append(text)
+        ids.append(recipe["id"])
+        metadatas.append(recipe.get("metadata", {}))
 
-        texts = []
-        ids = []
+    embeddings = self.embedding_generator.embed_batch(texts)
 
-        for recipe in recipes:
-            text = f"""
-            Title: {recipe['title']}
-            Ingredients: {', '.join(recipe['ingredients'])}
-            Instructions: {recipe['instructions']}
-            """
-            texts.append(text)
-            ids.append(recipe["id"])
-
-        embeddings = self.embedding_generator.embed_batch(texts)
-
-        self.collection.add(
-            documents=texts,
-            embeddings=embeddings,
-            ids=ids
-        )
+    self.collection.add(
+        documents=texts,
+        embeddings=embeddings,
+        metadatas=metadatas,
+        ids=ids
+    )
 
     def search(self, query: str, top_k: int = 3) -> List[str]:
         """
