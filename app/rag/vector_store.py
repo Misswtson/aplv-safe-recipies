@@ -118,7 +118,6 @@ class RecipeVectorStore:
              ids=ids
     )
 
-
     def search_safe(
         self,
         query: str,

@@ -3,28 +3,33 @@ from app.rag.vector_store import RecipeVectorStore
 from app.rag.allergy_normalizer import normalize_allergies
 
 
-class SafeRecipeRetriever:
+class RecipeRetriever:
     """
-    High-level retrieval layer applying safety + semantic search.
+    High-level retrieval layer for the RAG pipeline.
+    Applies semantic search + hard safety constraints.
     """
 
-    def __init__(self, store: RecipeVectorStore):
-        self.store = store
+    def __init__(self):
+        self.store = RecipeVectorStore()
 
-    def search(
+    def retrieve(
         self,
         query: str,
-        user_allergies: List[str],
+        forbidden_allergies: List[str],
         top_k: int = 5
     ) -> List[str]:
         """
-        Perform a safe semantic search given user allergies.
+        Retrieve safe, relevant recipe chunks for a user query.
         """
 
-        normalized_allergies = normalize_allergies(user_allergies)
+        # 1️⃣ Normalize allergies (egg → HUEVO, milk → APLV, etc.)
+        normalized_allergies = normalize_allergies(forbidden_allergies)
 
-        return self.store.search_safe(
+        # 2️⃣ Query vector store with hard filters
+        results = self.store.search_safe(
             query=query,
             forbidden_allergens=list(normalized_allergies),
             top_k=top_k
         )
+
+        return results
