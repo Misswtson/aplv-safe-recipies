@@ -99,6 +99,26 @@ class RecipeVectorStore:
             ids=ids,
         )
 
+    def add_documents(self, documents: List[Dict]):
+        texts = []
+        ids = []
+        metadatas = []
+
+        for doc in documents:
+            texts.append(doc["text"])
+            ids.append(doc["id"])
+            metadatas.append(doc.get("metadata", {}))
+
+        embeddings = self.embedding_generator.embed_batch(texts)
+
+        self.collection.add(
+             documents=texts,
+             embeddings=embeddings,
+             metadatas=metadatas,
+             ids=ids
+    )
+
+
     def search_safe(
         self,
         query: str,
