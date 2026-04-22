@@ -35,7 +35,7 @@ def run_ingestion():
     """
 
     loader = RecipeLoader("data/recipes.json")
-    recipes = loader.get_recipes()
+    recipes = loader.load()
 
     store = RecipeVectorStore()
 

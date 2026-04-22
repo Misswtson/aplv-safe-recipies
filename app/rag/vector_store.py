@@ -1,5 +1,6 @@
 from typing import List, Dict, Any
 import chromadb
+from app.rag.embeddings import EmbeddingGenerator
 
 
 class _DummyEmbeddingGenerator:
@@ -28,7 +29,7 @@ class RecipeVectorStore:
 
         # 👉 si no se pasa embedding generator, usamos dummy (tests)
         self.embedding_generator = (
-            embedding_generator or _DummyEmbeddingGenerator()
+            embedding_generator or EmbeddingGenerator()
         )
 
     def _normalize_ingredients(self, ingredients: Any) -> str:
